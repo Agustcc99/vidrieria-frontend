@@ -1,6 +1,7 @@
 // URL base de la API, se toma de las variables de entorno de Vite.
 // Si no existe VITE_API_BASE_URL, cae por defecto a localhost.
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+console.log("👉 API_BASE_URL =", API_BASE_URL);
 // Headers comunes para todos los requests.
 // Content-Type JSON por defecto (puede sobreescribirse en cada llamada).
 const defaultHeaders = {

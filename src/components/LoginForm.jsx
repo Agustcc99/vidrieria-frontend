@@ -62,7 +62,7 @@ export function LoginForm({ onLoginSuccess }) {
         <label className="form-label">Contraseña</label>
         <input
           type="password"
-          className="form-control "
+          className="form-control"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
