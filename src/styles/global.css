@@ -1,0 +1,11 @@
+
+body {
+  background-color: #eeeeee;
+}
+
+.app-container {
+  min-height: 100vh;
+}
+html {
+  scroll-behavior: smooth;
+}

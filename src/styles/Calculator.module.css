@@ -1,0 +1,11 @@
+
+.formRow {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.formRow > div {
+  flex: 1;
+  min-width: 160px;
+}
