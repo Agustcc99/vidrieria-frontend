@@ -1,7 +1,8 @@
 // URL base de la API, se toma de las variables de entorno de Vite.
 // Si no existe VITE_API_BASE_URL, cae por defecto a localhost.
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:4000";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 console.log("👉 API_BASE_URL =", API_BASE_URL);
+
 // Headers comunes para todos los requests.
 // Content-Type JSON por defecto (puede sobreescribirse en cada llamada).
 const defaultHeaders = {
@@ -16,6 +17,7 @@ const defaultHeaders = {
  *   - el parseo automático de JSON o texto
  *   - el envío de cookies (credentials: include)
  */
+
 export async function apiFetch(path, options = {}) {
   // Llamada fetch combinando defaults + overrides
   const response = await fetch(`${API_BASE_URL}${path}`, {
@@ -48,6 +50,6 @@ export async function apiFetch(path, options = {}) {
     throw new Error(message);
   }
 
-  // Si todo salió bien, devolvemos la data ya parseada
+  // Si t0do salió bien, devolvemos la data ya parseada
   return data;
 }
