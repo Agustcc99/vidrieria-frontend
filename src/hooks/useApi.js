@@ -1,55 +1,50 @@
 // URL base de la API, se toma de las variables de entorno de Vite.
-// Si no existe VITE_API_BASE_URL, cae por defecto a localhost.
+// Si no existe VITE_API_BASE_URL, cae por defecto a "" (misma URL del front).
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "";
 console.log("👉 API_BASE_URL =", API_BASE_URL);
 
-// Headers comunes para todos los requests.
-// Content-Type JSON por defecto (puede sobreescribirse en cada llamada).
 const defaultHeaders = {
-  "Content-Type": "application/json"
+  "Content-Type": "application/json",
 };
 
-/**
- * Helper para hacer fetch usando cookies HTTP-only.
- * Centraliza:
- *   - la URL base
- *   - el manejo de errores
- *   - el parseo automático de JSON o texto
- *   - el envío de cookies (credentials: include)
- */
+// Une base + path sin duplicar / ni /api/api
+function unirUrl(base, path) {
+  const b = (base || "").replace(/\/+$/, ""); // quita barras al final
+  const p = (path || "").startsWith("/") ? path : `/${path}`;
+
+  // Evita /api/api cuando base="/api" y path="/api/..."
+  if (b.endsWith("/api") && p.startsWith("/api/")) {
+    return `${b}${p.slice(4)}`; // quita el primer "/api"
+  }
+
+  return `${b}${p}`;
+}
 
 export async function apiFetch(path, options = {}) {
-  // Llamada fetch combinando defaults + overrides
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    // Enviar cookies (JWT httpOnly)
-    credentials: "include",
+  const url = unirUrl(API_BASE_URL, path);
 
-    // Headers: merge entre defaultHeaders y los headers del caller
+  const response = await fetch(url, {
+    credentials: "include",
     headers: {
       ...defaultHeaders,
-      ...(options.headers || {})
+      ...(options.headers || {}),
     },
-    // Merge general de options (method, body, etc.)
-    ...options
+    ...options,
   });
 
-  // Detectamos si la respuesta es JSON o texto
   const contentType = response.headers.get("content-type") || "";
   let data = null;
+
   if (contentType.includes("application/json")) {
-    // Si la respuesta es JSON, la parseamos
     data = await response.json();
   } else {
-    // Si la respuesta es JSON, la parseamos
     data = await response.text();
   }
 
-  // Manejo centralizado de errores (status >= 400)
   if (!response.ok) {
     const message = data && data.message ? data.message : "Error en la petición";
     throw new Error(message);
   }
 
-  // Si t0do salió bien, devolvemos la data ya parseada
   return data;
 }
